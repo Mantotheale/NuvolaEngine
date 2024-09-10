@@ -17,6 +17,7 @@ public class Window {
     private final String title;
     private int width;
     private int height;
+    private boolean shouldClose;
 
     public Window(String title, int width, int height) {
         this.title = title;
@@ -40,8 +41,12 @@ public class Window {
         glViewport(0, 0, width, height);
     }
 
+    public void setClose() {
+        shouldClose = true;
+    }
+
     public boolean shouldClose() {
-        return glfwWindowShouldClose(id);
+        return glfwWindowShouldClose(id) || shouldClose;
     }
 
     public void close() {

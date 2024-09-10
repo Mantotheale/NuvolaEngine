@@ -4,6 +4,7 @@ import nuvola.input.Input;
 import nuvola.input.InputQueue;
 import nuvola.window.Window;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.Objects;
 
@@ -24,8 +25,11 @@ public class Nuvola {
             while (!inputQueue.isEmpty()) {
                 Input input = inputQueue.remove();
 
-                if (input instanceof Input.KeyInput)
-                    System.out.println("AAAAAA");
+                if (input instanceof Input.KeyInput key) {
+                    System.out.println("Button pressed, " + key);
+                    if (key.key() == GLFW.GLFW_KEY_ESCAPE)
+                        window.setClose();
+                }
             }
 
             window.swapBuffers();
