@@ -1,4 +1,4 @@
-package nuvola.exceptions;
+package nuvola.exceptions.glfw;
 
 public class GLFWOpenWindowException extends RuntimeException {
     public GLFWOpenWindowException() {

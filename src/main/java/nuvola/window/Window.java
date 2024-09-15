@@ -1,7 +1,7 @@
 package nuvola.window;
 
-import nuvola.exceptions.GLFWInitializationException;
-import nuvola.exceptions.GLFWOpenWindowException;
+import nuvola.exceptions.glfw.GLFWInitializationException;
+import nuvola.exceptions.glfw.GLFWOpenWindowException;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;

@@ -1,4 +1,4 @@
-package nuvola.exceptions;
+package nuvola.exceptions.glfw;
 
 public class GLFWInitializationException extends RuntimeException {
     public GLFWInitializationException() {
