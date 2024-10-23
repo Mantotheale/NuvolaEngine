@@ -2,6 +2,7 @@ package nuvola.transform;
 
 import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4f;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -19,6 +20,11 @@ public record Rotation(@NotNull Quaternionf quaternion) implements SpacialTransf
     @Override
     public @NotNull Point apply(@NotNull Point point) {
         return new Point(quaternion.transform(point.vector()));
+    }
+
+    @Override
+    public @NotNull Matrix4f matrix() {
+        return new Matrix4f().rotation(quaternion);
     }
 
     @NotNull public static Rotation IDENTITY = new Rotation(new Quaternionf());

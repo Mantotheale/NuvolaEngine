@@ -1,4 +1,4 @@
-package nuvola.render.texture;
+package nuvola.render.material;
 
 import nuvola.exceptions.misc.UnableOpenFileException;
 import nuvola.exceptions.texture.UnsupportedChannelsNumberException;

@@ -24,4 +24,9 @@ public record VertexAttribute(@NotNull VertexAttributeTemplate template, int off
     public int glEnum() {
         return template.openGLType().glEnum();
     }
+
+    @Override
+    public String toString() {
+        return "{template: " + template + ", offset: " + offset +"}";
+    }
 }

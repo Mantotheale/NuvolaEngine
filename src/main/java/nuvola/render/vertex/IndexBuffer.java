@@ -24,6 +24,10 @@ public class IndexBuffer {
         MemoryUtil.memFree(buffer);
     }
 
+    public int id() {
+        return id;
+    }
+
     public int count() {
         return count;
     }

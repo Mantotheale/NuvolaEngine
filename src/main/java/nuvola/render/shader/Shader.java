@@ -1,7 +1,6 @@
 package nuvola.render.shader;
 
 import nuvola.exceptions.shader.ShaderCompilationException;
-import nuvola.utils.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -15,19 +14,18 @@ public abstract class Shader {
     @NotNull private final String content;
     private boolean isDeleted;
 
-    public Shader(@NotNull ShaderType type, @NotNull String pathString) {
+    public Shader(@NotNull ShaderType type, @NotNull String content) {
         this.type = Objects.requireNonNull(type);
-        content = FileUtils.fileToString(Objects.requireNonNull(pathString));
+        this.content = content;
 
         id = glCreateShader(type.glType());
-        glShaderSource(id, content);
+        glShaderSource(id, Objects.requireNonNull(content));
         glCompileShader(id);
 
         if (glGetShaderi(id, GL_COMPILE_STATUS) == GL_FALSE)
             throw new ShaderCompilationException(this, glGetShaderInfoLog(id));
         isDeleted = false;
     }
-
     public int id() {
         return id;
     }

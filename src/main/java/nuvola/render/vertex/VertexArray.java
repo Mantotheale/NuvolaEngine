@@ -3,6 +3,7 @@ package nuvola.render.vertex;
 import nuvola.render.vertex.layout.VertexAttribute;
 import org.jetbrains.annotations.NotNull;
 
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -27,16 +28,22 @@ public class VertexArray {
         setIndexBuffer(indexBuffer);
     }
 
+    public int id() {
+        return id;
+    }
+
     public void setVertexBuffer(@NotNull VertexBuffer vertexBuffer) {
         glBindVertexArray(id);
         vertexBuffer.bind();
 
         int i = 0;
         for (VertexAttribute attribute: vertexBuffer.layout()) {
-            glVertexAttribPointer(i, attribute.count(), attribute.glEnum(), false, attribute.size(), attribute.offset());
+            glVertexAttribPointer(i, attribute.count(), attribute.glEnum(), false, vertexBuffer.layout().size(), attribute.offset());
             glEnableVertexAttribArray(i);
             i++;
         }
+
+        this.vertexBuffer = vertexBuffer;
     }
 
     public void removeVertexBuffer() {
@@ -50,6 +57,8 @@ public class VertexArray {
     public void setIndexBuffer(@NotNull IndexBuffer indexBuffer) {
         glBindVertexArray(id);
         indexBuffer.bind();
+
+        this.indexBuffer = indexBuffer;
     }
 
     public void removeIndexBuffer() {

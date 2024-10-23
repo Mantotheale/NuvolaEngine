@@ -41,7 +41,7 @@ public class Window {
         glViewport(0, 0, width, height);
     }
 
-    public void setClose() {
+    public void signalClose() {
         shouldClose = true;
     }
 

@@ -9,6 +9,10 @@ public record Scale(float x, float y, float z) implements SpacialTransformation 
         this(scale.x, scale.y, scale.z);
     }
 
+    public Scale(float s) {
+        this(s, s, s);
+    }
+
     private @NotNull Matrix4f transformationMatrix() {
         return new Matrix4f().scaling(x, y, z);
     }
@@ -16,6 +20,11 @@ public record Scale(float x, float y, float z) implements SpacialTransformation 
     @Override
     public @NotNull Point apply(@NotNull Point point) {
         return new Point(transformationMatrix().transform(point.vector()));
+    }
+
+    @Override
+    public @NotNull Matrix4f matrix() {
+        return new Matrix4f().scaling(x, y, z);
     }
 
     @NotNull public static Scale IDENTITY = new Scale(1, 1, 1);

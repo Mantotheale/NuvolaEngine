@@ -2,6 +2,7 @@ package nuvola.render.shader;
 
 import nuvola.exceptions.shader.ShaderProgramLinkingException;
 import nuvola.exceptions.shader.ShaderUniformNotFoundException;
+import nuvola.render.material.Texture;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -68,6 +69,11 @@ public class ShaderProgram {
     public void setUniform(String name, @NotNull Vector3f value) {
         bind();
         glUniform3f(getUniformLocation(name), value.x, value.y, value.z);
+    }
+
+    public void setUniform(String name, @NotNull Texture value) {
+        bind();
+        glUniform1i(getUniformLocation(name), value.id());
     }
 
     public void setUniform(String name, @NotNull Matrix4f value) {

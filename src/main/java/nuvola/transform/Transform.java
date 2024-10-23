@@ -1,6 +1,7 @@
 package nuvola.transform;
 
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 public class Transform implements SpacialTransformation {
     @NotNull public Translation translation;
@@ -16,5 +17,10 @@ public class Transform implements SpacialTransformation {
     @Override
     public @NotNull Point apply(@NotNull Point point) {
         return rotation.apply(translation.apply(scale.apply(point)));
+    }
+
+    @Override
+    public @NotNull Matrix4f matrix() {
+        return new Matrix4f().mul(scale.matrix()).mul(translation.matrix()).mul(rotation.matrix());
     }
 }

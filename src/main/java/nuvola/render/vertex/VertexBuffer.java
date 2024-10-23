@@ -53,13 +53,14 @@ public class VertexBuffer {
         int size = 0;
 
         for (Number n: values) {
-            switch (n) {
-                case Integer x -> size += Integer.BYTES;
-                case Float x -> size += Float.BYTES;
-                case Byte x -> size += Byte.BYTES;
+            size += switch (n) {
+                case Integer _ -> Integer.BYTES;
+                case Float _ -> Float.BYTES;
+                case Byte _ -> Byte.BYTES;
                 case null -> throw new VertexValuesNullException();
                 case Object x -> throw new UnexpectedTypeInsideVertexException(x);
-            }
+            };
+
         }
 
         return size;
@@ -70,13 +71,13 @@ public class VertexBuffer {
 
         for (Number n: values) {
             switch (n) {
-                case Integer x -> buffer.asIntBuffer().put(x);
-                case Float x -> buffer.asFloatBuffer().put(x);
+                case Integer x -> buffer.putInt(x);
+                case Float x -> buffer.putFloat(x);
                 case Byte x -> buffer.put(x);
                 default -> throw new UnreachableCodeException();
             }
         }
 
-        return buffer.flip();
+        return buffer.rewind();
     }
 }

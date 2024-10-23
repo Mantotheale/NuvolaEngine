@@ -31,6 +31,18 @@ public class VertexLayout implements Iterable<VertexAttribute> {
         return attributes.iterator();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder().append("Layout:\n");
+
+        for (VertexAttribute attribute: attributes)
+            sb.append("- ").append(attribute).append('\n');
+
+        sb.append("Size: ").append(size);
+
+        return sb.toString();
+    }
+
     public static class Builder {
         @NotNull private final List<VertexAttribute> attributes;
 
