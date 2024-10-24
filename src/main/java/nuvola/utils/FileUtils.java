@@ -11,13 +11,15 @@ import java.util.Objects;
 public final class FileUtils {
     private FileUtils() { }
 
-    @NotNull public static String fileToString(@NotNull String filePathString) {
-        Path filePath = Path.of(Objects.requireNonNull(filePathString));
-
+    @NotNull public static String fileToString(@NotNull Path filePath) {
         try {
-            return Files.readString(filePath);
+            return Files.readString(Objects.requireNonNull(filePath));
         } catch (IOException e) {
-            throw new UnableOpenFileException(filePathString);
+            throw new UnableOpenFileException(filePath.toString());
         }
+    }
+
+    @NotNull public static String fileToString(@NotNull String filePathString) {
+        return fileToString(Path.of(Objects.requireNonNull(filePathString)));
     }
 }

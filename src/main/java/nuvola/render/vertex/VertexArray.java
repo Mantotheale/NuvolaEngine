@@ -1,9 +1,8 @@
 package nuvola.render.vertex;
 
-import nuvola.render.vertex.layout.VertexAttribute;
+import nuvola.render.vertex.layout.VertexAttributeTemplate;
 import org.jetbrains.annotations.NotNull;
 
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -37,10 +36,18 @@ public class VertexArray {
         vertexBuffer.bind();
 
         int i = 0;
-        for (VertexAttribute attribute: vertexBuffer.layout()) {
-            glVertexAttribPointer(i, attribute.count(), attribute.glEnum(), false, vertexBuffer.layout().size(), attribute.offset());
+        int offset = 0;
+        for (VertexAttributeTemplate attributeLayout: vertexBuffer.layout()) {
+            glVertexAttribPointer(
+                i,
+                attributeLayout.count(),
+                attributeLayout.type().glEnum(),
+                false,
+                vertexBuffer.layout().size(),
+                offset);
             glEnableVertexAttribArray(i);
             i++;
+            offset += attributeLayout.size();
         }
 
         this.vertexBuffer = vertexBuffer;
@@ -77,7 +84,7 @@ public class VertexArray {
         glBindVertexArray(0);
     }
 
-    public int count() {
+    public int vertexCount() {
         return isVertexBufferSet() ? vertexBuffer.vertexCount() : 0;
     }
 

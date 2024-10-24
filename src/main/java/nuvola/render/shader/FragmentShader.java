@@ -3,16 +3,18 @@ package nuvola.render.shader;
 import nuvola.utils.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import java.nio.file.Path;
 
 public class FragmentShader extends Shader {
     public FragmentShader(@NotNull String pathString) {
         super(ShaderType.FRAGMENT_SHADER, pathString);
     }
 
-    @NotNull public static FragmentShader fromFile(@NotNull String pathString) {
-        String content = FileUtils.fileToString(Objects.requireNonNull(pathString));
+    @NotNull public static FragmentShader fromFile(@NotNull Path path) {
+        return new FragmentShader(FileUtils.fileToString(path));
+    }
 
-        return new FragmentShader(content);
+    @NotNull public static FragmentShader fromFile(@NotNull String pathString) {
+        return new FragmentShader(FileUtils.fileToString(pathString));
     }
 }

@@ -9,6 +9,7 @@ import org.joml.Vector3f;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
+import java.nio.file.Path;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
@@ -32,6 +33,16 @@ public class ShaderProgram {
 
         glDetachShader(id, vertexShader.id());
         glDetachShader(id, fragmentShader.id());
+    }
+
+    public ShaderProgram(@NotNull Path vertexShaderPath, @NotNull Path fragmentShaderPath) {
+        VertexShader vertexShader = VertexShader.fromFile(vertexShaderPath);
+        FragmentShader fragmentShader = FragmentShader.fromFile(fragmentShaderPath);
+
+        this(vertexShader, fragmentShader);
+
+        vertexShader.delete();
+        fragmentShader.delete();
     }
 
     public void bind() {

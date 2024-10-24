@@ -31,6 +31,6 @@ public class Mesh {
         if (vertexArray.isIndexSet())
             glDrawElements(GL_TRIANGLES, vertexArray.indexCount(), GL_UNSIGNED_INT, 0);
         else
-            glDrawArrays(GL_TRIANGLES, 0, vertexArray.count());
+            glDrawArrays(GL_TRIANGLES, 0, vertexArray.vertexCount());
     }
 }

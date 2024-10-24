@@ -1,13 +1,13 @@
 package nuvola.render.vertex;
 
-import nuvola.exceptions.vertex.UnexpectedTypeInsideVertexException;
-import nuvola.exceptions.misc.UnreachableCodeException;
-import nuvola.exceptions.vertex.VertexValuesNullException;
+import nuvola.exceptions.vertex.VertexBufferNotHomogenousException;
 import nuvola.render.vertex.layout.VertexLayout;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 
 import static org.lwjgl.opengl.GL15.*;
@@ -18,19 +18,42 @@ public class VertexBuffer {
     private final VertexLayout layout;
     private final int vertexCount;
 
-    public VertexBuffer(@NotNull VertexLayout layout, Number ...values) {
-        this.layout = Objects.requireNonNull(layout);
+    public VertexBuffer(@NotNull Vertex ...vertices) {
+        Objects.requireNonNull(vertices);
 
-        int size = calculateSize(values);
-        vertexCount = size / layout.size();
+        if (!areAllLayoutsEqual(Arrays.stream(vertices).iterator()))
+            throw new VertexBufferNotHomogenousException();
 
-        ByteBuffer buffer = loadBuffer(size, values);
+        layout = vertices[0].layout();
+        vertexCount = vertices.length;
+
+        int size = layout.size() * vertexCount;
+
+        ByteBuffer buffer = MemoryUtil.memAlloc(size);
+        for (Vertex v: vertices) {
+            ByteBuffer vertexData = v.data();
+            buffer.put(vertexData);
+            MemoryUtil.memFree(vertexData);
+        }
 
         id = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, id);
-        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, buffer.flip(), GL_STATIC_DRAW);
 
         MemoryUtil.memFree(buffer);
+    }
+
+    private static boolean areAllLayoutsEqual(@NotNull Iterator<Vertex> vertices) {
+        if (!vertices.hasNext())
+            return true;
+
+        VertexLayout layout = vertices.next().layout();
+
+        while (vertices.hasNext())
+            if (!layout.equals(vertices.next().layout()))
+                return false;
+
+        return true;
     }
 
     public void bind() {
@@ -47,37 +70,5 @@ public class VertexBuffer {
 
     public int vertexCount() {
         return vertexCount;
-    }
-
-    private static int calculateSize(@NotNull Number[] values) {
-        int size = 0;
-
-        for (Number n: values) {
-            size += switch (n) {
-                case Integer _ -> Integer.BYTES;
-                case Float _ -> Float.BYTES;
-                case Byte _ -> Byte.BYTES;
-                case null -> throw new VertexValuesNullException();
-                case Object x -> throw new UnexpectedTypeInsideVertexException(x);
-            };
-
-        }
-
-        return size;
-    }
-
-    @NotNull private static ByteBuffer loadBuffer(int size, @NotNull Number[] values) {
-        ByteBuffer buffer = MemoryUtil.memAlloc(size);
-
-        for (Number n: values) {
-            switch (n) {
-                case Integer x -> buffer.putInt(x);
-                case Float x -> buffer.putFloat(x);
-                case Byte x -> buffer.put(x);
-                default -> throw new UnreachableCodeException();
-            }
-        }
-
-        return buffer.rewind();
     }
 }

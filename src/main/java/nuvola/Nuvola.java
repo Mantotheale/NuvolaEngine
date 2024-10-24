@@ -10,15 +10,15 @@ import nuvola.render.shader.FragmentShader;
 import nuvola.render.shader.ShaderProgram;
 import nuvola.render.shader.VertexShader;
 import nuvola.render.material.Texture;
-import nuvola.render.vertex.IndexBuffer;
-import nuvola.render.vertex.VertexArray;
-import nuvola.render.vertex.VertexBuffer;
-import nuvola.render.vertex.layout.VertexAttributeTemplate;
-import nuvola.render.vertex.layout.VertexLayout;
+import nuvola.render.vertex.*;
+import nuvola.render.vertex.attribute.Position3DAttribute;
+import nuvola.render.vertex.attribute.TexCoords2DAttribute;
 import nuvola.window.Window;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 
 public class Nuvola {
@@ -36,29 +36,22 @@ public class Nuvola {
     }
 
     private void setup() {
-        String shaderDirectory = "src/main/resources/shaders/";
-        VertexShader vShader = VertexShader.fromFile(shaderDirectory + "/vertexShaders/textureVertexShader.vert");
-        FragmentShader fShader = FragmentShader.fromFile(shaderDirectory + "/fragmentShaders/textureFragmentShader.frag");
+        Path shaderDirectory = Path.of("src/main/resources/shaders/");
+        Path vertexShaderPath = shaderDirectory.resolve("vertexShaders/textureVertexShader.vert");
+        Path fragmentShaderPath = shaderDirectory.resolve("fragmentShaders/textureFragmentShader.frag");
 
-        ShaderProgram shaderProgram = new ShaderProgram(vShader, fShader);
-
-        vShader.delete();
-        fShader.delete();
+        ShaderProgram shaderProgram = new ShaderProgram(vertexShaderPath, fragmentShaderPath);
 
         Texture texture = new Texture("src/main/resources/textures/suricati.jpg");
 
         Material material = new SimpleTextureMaterial(shaderProgram, texture);
 
-        VertexLayout layout = new VertexLayout.Builder()
-            .addTemplate(VertexAttributeTemplate.ThreeDimensionsPosition)
-            .addTemplate(VertexAttributeTemplate.TwoDimensionsTextureCoordinates)
-            .build();
-
-        VertexBuffer vertexBuffer = new VertexBuffer(layout,
-            -0.5f, -0.5f, 0f, 0f, 0f,
-            0.5f, -0.5f, 0f, 1f, 0f,
-            0.5f, 0.5f, 0f, 1f, 1f,
-            -0.5f, 0.5f, 0f, 0f, 1f);
+        VertexBuffer vertexBuffer = new VertexBuffer(
+            new Vertex(new Position3DAttribute(-0.5f, -0.5f, 0.5f), new TexCoords2DAttribute(0, 0)),
+            new Vertex(new Position3DAttribute(0.5f, -0.5f, 0), new TexCoords2DAttribute(1, 0)),
+            new Vertex(new Position3DAttribute(0.5f, 0.5f, 0), new TexCoords2DAttribute(1, 1)),
+            new Vertex(new Position3DAttribute(-0.5f, 0.5f, 0), new TexCoords2DAttribute(0, 1))
+            );
 
         IndexBuffer indexBuffer = new IndexBuffer(
             0, 1, 2,
